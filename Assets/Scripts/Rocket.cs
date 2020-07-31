@@ -10,6 +10,9 @@ public class Rocket : MonoBehaviour
     [SerializeField] AudioClip thrust;
     [SerializeField] AudioClip dead;
     [SerializeField] AudioClip win;
+    [SerializeField] ParticleSystem explosionPart;
+    [SerializeField] ParticleSystem successPart;
+    [SerializeField] ParticleSystem thrustPart;
     enum State {Alive,Dead,Transcending};
     State state = State.Alive;
     
@@ -48,13 +51,14 @@ public class Rocket : MonoBehaviour
             case "Jammer":
                 break;
             default:
-                Dead();
+                DeathSequence();
                 break;
         }
     }
     private void PlaySuccessSequence()
     {
         state = State.Transcending;
+        successPart.Play();
         audioSource.Stop();
         audioSource.PlayOneShot(win);
         Invoke("LoadNextState", 1.5f);
@@ -63,11 +67,16 @@ public class Rocket : MonoBehaviour
     {
         SceneManager.LoadScene(1);
     }
-    private void Dead()
+    private void DeathSequence()
     {
         state = State.Dead;
         audioSource.Stop();
         audioSource.PlayOneShot(dead);
+        explosionPart.Play();
+        Invoke("Dead", 1.5f);
+    }
+    private void Dead()
+    {
         SceneManager.LoadScene(0);
     }
     private void ThrustHandler()
@@ -89,6 +98,7 @@ public class Rocket : MonoBehaviour
         {
             audioSource.PlayOneShot(thrust);
         }
+        thrustPart.Play();
     }
     private void RotateHandler()
     {
