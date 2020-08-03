@@ -65,7 +65,12 @@ public class Rocket : MonoBehaviour
     }
     private void LoadNextState()
     {
-        SceneManager.LoadScene(1);
+        int currentlvl = SceneManager.GetActiveScene().buildIndex;
+        if(currentlvl >= SceneManager.sceneCountInBuildSettings)
+        {
+            SceneManager.LoadScene(0);
+        }
+        SceneManager.LoadScene(currentlvl+1);
     }
     private void DeathSequence()
     {
